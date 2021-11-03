@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ wine }}  {{ wine.producer }}{% endblock %}
+
+{% block content %}
+<h1 class="text-center">{{ wine }}<a href="{{ url_for('filter', sort_id=0, producer_id = wine.producer.id) }}" class="text-danger">{{ wine.producer}}</a></h1>
+<h2 class="text-center"><a href="{{ url_for('filter', sort_id = wine.sort.id, producer_id = 0) }}">{{ wine.sort}}</a></h2>
+
+<div class="row">
+    <div class="col-2">
+        {% set img= 'red.png' if wine.sort.name.startswith('red') else 'white.png' %}
+        <img class="img-fluid" src="{{ url_for('static', filename='img/' + img) }}">
+    </div>
+    <div class="col-2">
+        <h1 class="text-success">&euro; {{ '%.2f' | format(wine.price) }}</h1>
+    </div>
+    <div class="col-2">
+        {% if wine.top %}
+        <img class="img-fluid" src="{{ url_for('static', filename='img/topsale.png') }}" type="image/png">
+        {% endif %}
+    </div>
+    <div class="col-6">
+        {% if wine.comments %}
+            {% for comment in wine.comments %}
+            <p>{{ comment }}</p>
+            {% endfor %}
+        {% else %}
+            <p>Add First Comment</p>
+        {% endif %}
+        <hr>
+        <form   method="post" action="{{ url_for('add_comment', pk=wine.id) }}">
+            <table>
+                <tr>
+                    <td>
+                        <p>Comment: </p>
+                    </td>
+                    <td>
+                        <input type="text" name="text">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>Author:</p>
+                    </td>
+                    <td>
+                        <input type="text" name="author">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>Email:</p>
+                    </td>
+                    <td>
+                        <input type="text" name="email">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" value="Add Comment">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<a href="{{ url_for('config', pk=wine.id) }}"><img src="{{ url_for('static', filename='img/config.png') }}" width="30"></a>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ wine }} {{ wine.producer }}
+{% endblock %}
+
+{% block content %}
+<h1 class="text-center"> Config {{ wine }} {{ wine.producer }}</h1>
+
+<div class="row">
+
+    <div class="col-5">
+        <form method="post" action="{{ url_for('change_wine', pk=wine.id) }}" >
+            <div class="mb-3 row">
+                <label>name:</label>
+                <input name="name" type="text" value="{{ wine.name }}">
+            </div>
+            <div class="mb-3 row">
+                <label>price:</label>
+                <input name="price" type="number" value="{{ wine.price }}" step="0.01" min="0">
+            </div>
+            <div class="mb-3 row">
+                {% for producer in producers %}
+                {% set active = 'checked' if producer==wine.producer else '' %}
+                <label for="producer_{{ producer.id }}">{{ producer }}</label>
+                <input type="radio" name="producer" id="producer_{{ producer.id }}" value="{{ producer.id }}" {{ active }}>
+                {% endfor %}
+            </div>
+            <div class="mb-3 row">
+                <select name="sort">
+                    {% for sort in sorts %}
+                    {% set active = 'selected' if sort==wine.sort else '' %}
+                        <option value="{{ sort.id }}" {{ active }}>{{ sort }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3 row">
+                <input type="checkbox" name="top" id="top" {{ 'checked' if wine.top else ' '}} >
+                <label for="top">top sales</label>
+            </div>
+            <div class="mb-3 row">
+                <input type="submit" value="config">
+            </div>
+        </form>
+
+
+    </div>
+
+</div>
+
+
+
+{%endblock%}

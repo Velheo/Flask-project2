@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Wines Boutique{% endblock %}
+
+{% block content %}
+<h1 class="text-center">FILTERED WINES</h1>
+<h2 class="text-center">Found: {{ wines.count() }}</h2>
+
+<div class="row">
+    <div class="col-2">
+        {% if producer %}
+        <p>Producer: {{ producer }}</p>
+        {% endif %}
+        {% if sort %}
+        <p>Sort: {{ sort }}</p>
+        {% endif %}
+    </div>
+    <div class="col-10">
+        {% for wine in wines %}
+        {% set img='red.png' if wine.sort.name.startswith('red') else 'white.png' %}
+
+        <div class="row">
+            <div class="col-1">
+                <img class="img-fluid" src="{{ url_for('static', filename='img/' +img) }}">
+            </div>
+            <div class="col-3">
+                <a href="{{ url_for('wine', pk=wine.id) }}"><p>{{ wine }}</p></a>
+            </div>
+            <div class="col-3">
+                <a href="{{ url_for('filter', sort_id=0, producer_id = wine.producer.id) }}"><p>{{ wine.producer }}</p></a>
+            </div>
+            <div class="col-3">
+                <a href="{{ url_for('filter', sort_id = wine.sort.id, producer_id = 0) }}"><p>{{ wine.sort }}</p></a>
+            </div>
+            <div class="col-2">
+                <p>&euro; {{ '%.2f' | format(wine.price) }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
